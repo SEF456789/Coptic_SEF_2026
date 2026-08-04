@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الحروف القبطية</title>
+
+<!-- خطوط Google للنصوص العربية (تعمل عند فتح الصفحة في المتصفح ولا تحتاج تحميل) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== الترويسة ===== -->
+  <header class="app-header">
+    <div class="header-ornament right"></div>
+    <div class="header-text">
+      <p class="eyebrow">ⲧⲉⲛⲯⲩⲭⲏ &middot; مدرسة الحروف</p>
+      <h1>الحروف القبطية</h1>
+    </div>
+    <div class="header-ornament left"></div>
+  </header>
+
+  <!-- ===== شريط التبويبات ===== -->
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="tab1" role="tab" aria-selected="true">
+      <span class="tab-index">ⲁ</span>
+      <span class="tab-label">الحروف</span>
+    </button>
+    <button class="tab-btn" data-tab="tab2" role="tab" aria-selected="false">
+      <span class="tab-index">ⲃ</span>
+      <span class="tab-label">لعبة الذاكرة</span>
+    </button>
+    <button class="tab-btn" data-tab="tab3" role="tab" aria-selected="false">
+      <span class="tab-index">ⲅ</span>
+      <span class="tab-label">قريبًا</span>
+    </button>
+  </nav>
+
+  <main class="tab-panels">
+
+    <!-- =========================================================
+         TAB 1 : الحروف القبطية
+    ========================================================== -->
+    <section id="tab1" class="tab-panel active" role="tabpanel">
+
+      <div class="panel-intro">
+        <h2>تعلّم الحروف</h2>
+        <p>اضغط على أي حرف لسماع نطقه وشرح الكلمة المرتبطة به.</p>
+      </div>
+
+      <div class="font-switcher">
+        <span>شكل الخط:</span>
+        <div class="font-options" id="fontSwitcher">
+          <button class="font-opt active" data-font="coptic-abraam">ABRAAM</button>
+          <button class="font-opt" data-font="coptic-shenouda">Avva Shenouda</button>
+          <button class="font-opt" data-font="coptic-copt">Copt</button>
+        </div>
+      </div>
+
+      <div id="lettersGrid" class="letters-grid"><!-- تُملأ عبر js/app.js من js/data-letters.js --></div>
+    </section>
+
+    <!-- =========================================================
+         TAB 2 : لعبة الذاكرة (Memory Match)
+    ========================================================== -->
+    <section id="tab2" class="tab-panel" role="tabpanel" hidden>
+
+      <div class="panel-intro">
+        <h2>لعبة الذاكرة &mdash; مار أفرام السرياني</h2>
+        <p>اقلب الكروت وحاول تطابق كل سؤال مع إجابته الصحيحة.</p>
+      </div>
+
+      <div class="game-toolbar">
+        <div class="game-stat">
+          <span class="stat-label">المحاولات</span>
+          <span class="stat-value" id="moveCount">0</span>
+        </div>
+        <div class="game-stat">
+          <span class="stat-label">الأزواج المكتشفة</span>
+          <span class="stat-value" id="matchCount">0 / 0</span>
+        </div>
+        <button class="btn-restart" id="restartGame">إعادة اللعب</button>
+      </div>
+
+      <div id="memoryGrid" class="memory-grid"><!-- تُملأ عبر js/memory-game.js من js/data-memory.js --></div>
+
+      <div class="win-banner" id="winBanner" hidden>
+        <p>🎉 أحسنت! أنهيت اللعبة في <span id="winMoves">0</span> محاولة.</p>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TAB 3 : قريبًا
+    ========================================================== -->
+    <section id="tab3" class="tab-panel" role="tabpanel" hidden>
+      <div class="empty-state">
+        <div class="empty-ornament"></div>
+        <h2>قريبًا</h2>
+        <p>هذا القسم لسه هيتحدد لاحقًا.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="js/data-letters.js"></script>
+<script src="js/data-memory.js"></script>
+<script src="js/app.js"></script>
+<script src="js/memory-game.js"></script>
+</body>
+</html>

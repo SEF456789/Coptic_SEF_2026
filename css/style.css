@@ -1,0 +1,468 @@
+/* =========================================================
+   ⲧⲉⲛⲯⲩⲭⲏ — Coptic Letters App
+   Design tokens
+   -------------------------------------------------
+   Palette (Coptic manuscript / icon inspired):
+     --parchment      #EDE3CC   aged vellum background
+     --parchment-2    #E4D5AE   deeper parchment (cards)
+     --ink            #2B2118   near-black manuscript ink
+     --maroon         #6B1E23   oxblood red (rubrication)
+     --maroon-deep    #4A1216   shadow red
+     --gold           #B8892B   gilding
+     --gold-light     #D9B45C   gilding highlight
+     --teal           #1F3B3A   icon-panel teal (tab 2 accent)
+
+   Type:
+     display  -> 'Amiri' (Arabic headers, manuscript character)
+     body     -> 'Cairo' (clean reading face)
+     utility  -> 'IBM Plex Sans Arabic' (labels, counters)
+   ========================================================= */
+
+@font-face {
+  font-family: "coptic-abraam";
+  src: url("../fonts/ABRAAM_0.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "coptic-shenouda";
+  src: url("../fonts/Avva_Shenouda.ttf") format("truetype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "coptic-copt";
+  src: url("../fonts/copt.ttf") format("truetype");
+  font-display: swap;
+}
+
+:root {
+  --parchment: #EDE3CC;
+  --parchment-2: #E4D5AE;
+  --ink: #2B2118;
+  --maroon: #6B1E23;
+  --maroon-deep: #4A1216;
+  --gold: #B8892B;
+  --gold-light: #D9B45C;
+  --teal: #1F3B3A;
+
+  --font-display: "Amiri", serif;
+  --font-body: "Cairo", sans-serif;
+  --font-utility: "IBM Plex Sans Arabic", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--parchment);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* subtle vellum texture */
+body {
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(184,137,43,0.08), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(107,30,35,0.06), transparent 45%);
+}
+
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+button { font-family: inherit; cursor: pointer; }
+
+/* ---------------------------------------------------------
+   Header
+--------------------------------------------------------- */
+.app-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 10px 26px;
+  border-bottom: 2px solid var(--gold);
+}
+
+.header-text { text-align: center; }
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-family: var(--font-utility);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: var(--maroon);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 5vw, 44px);
+  color: var(--ink);
+}
+
+.header-ornament {
+  width: 46px;
+  height: 46px;
+  opacity: 0.85;
+  background:
+    conic-gradient(from 45deg, var(--gold) 0 25%, transparent 0 50%, var(--gold) 0 75%, transparent 0);
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.header-ornament.right { margin-left: 18px; }
+.header-ornament.left  { margin-right: 18px; }
+
+/* ---------------------------------------------------------
+   Tabs — styled like manuscript bookmark tabs
+--------------------------------------------------------- */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 24px 0 8px;
+  border-bottom: 1px solid rgba(43,33,24,0.15);
+}
+
+.tab-btn {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 12px 18px 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(43,33,24,0.55);
+  border-radius: 10px 10px 0 0;
+  transition: color .2s ease, background .2s ease;
+}
+
+.tab-btn .tab-index {
+  font-family: "coptic-abraam", var(--font-display);
+  color: var(--gold);
+  font-size: 15px;
+}
+
+.tab-btn:hover { color: var(--ink); }
+
+.tab-btn.active {
+  color: var(--maroon);
+  background: var(--parchment-2);
+}
+
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 3px;
+  background: var(--maroon);
+  border-radius: 3px 3px 0 0;
+}
+
+/* ---------------------------------------------------------
+   Panels
+--------------------------------------------------------- */
+.tab-panel { padding: 26px 4px 10px; }
+.tab-panel[hidden] { display: none; }
+
+.panel-intro h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  margin: 0 0 6px;
+  color: var(--maroon);
+}
+.panel-intro p {
+  margin: 0 0 20px;
+  color: rgba(43,33,24,0.75);
+}
+
+/* ---------------------------------------------------------
+   TAB 1 — letters
+--------------------------------------------------------- */
+.font-switcher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  font-family: var(--font-utility);
+  font-size: 14px;
+}
+.font-options { display: flex; gap: 8px; flex-wrap: wrap; }
+.font-opt {
+  border: 1px solid rgba(184,137,43,0.5);
+  background: transparent;
+  color: var(--maroon-deep);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+.font-opt.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+
+.letters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 16px;
+}
+
+.letter-card {
+  position: relative;
+  background: var(--parchment-2);
+  border: 1px solid rgba(184,137,43,0.4);
+  border-radius: 14px;
+  padding: 16px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+/* illuminated-manuscript corner flourishes — signature detail */
+.letter-card::before,
+.letter-card::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--gold);
+  opacity: 0.6;
+}
+.letter-card::before { top: 6px; right: 6px; border-bottom: none; border-left: none; }
+.letter-card::after  { bottom: 6px; left: 6px; border-top: none; border-right: none; }
+
+.letter-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(74,18,22,0.18);
+  border-color: var(--gold);
+}
+
+.letter-card.playing {
+  border-color: var(--maroon);
+  box-shadow: 0 0 0 3px rgba(107,30,35,0.15);
+}
+
+/* the empty "letter shape" slot — fill with an <img> per letter, or it
+   falls back to rendering the Unicode Coptic character in the chosen font */
+.letter-shape {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.35);
+  overflow: hidden;
+}
+.letter-shape img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.letter-shape .letter-glyph {
+  font-size: 34px;
+  line-height: 1;
+  color: var(--maroon-deep);
+}
+
+.letter-name {
+  font-family: var(--font-utility);
+  font-size: 12px;
+  color: rgba(43,33,24,0.7);
+  text-align: center;
+}
+
+/* sound-playing indicator, shown while audio is active */
+.sound-indicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 22px;
+  height: 22px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.letter-card.playing .sound-indicator { display: flex; }
+.sound-indicator span {
+  display: block;
+  width: 4px;
+  margin: 0 1.5px;
+  background: var(--maroon);
+  border-radius: 2px;
+  animation: soundBar 0.9s ease-in-out infinite;
+}
+.sound-indicator span:nth-child(1) { height: 8px;  animation-delay: 0s; }
+.sound-indicator span:nth-child(2) { height: 16px; animation-delay: 0.15s; }
+.sound-indicator span:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+
+@keyframes soundBar {
+  0%, 100% { transform: scaleY(0.4); }
+  50%      { transform: scaleY(1); }
+}
+
+/* ---------------------------------------------------------
+   TAB 2 — memory game
+--------------------------------------------------------- */
+.game-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.game-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-utility);
+}
+.stat-label { font-size: 12px; color: rgba(43,33,24,0.6); }
+.stat-value { font-size: 18px; font-weight: 700; color: var(--teal); }
+
+.btn-restart {
+  margin-inline-start: auto;
+  background: var(--maroon);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.btn-restart:hover { background: var(--maroon-deep); }
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 14px;
+  perspective: 1000px;
+}
+
+.memory-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  cursor: pointer;
+}
+.memory-card .card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform .5s cubic-bezier(.2,.8,.2,1);
+  transform-style: preserve-3d;
+}
+.memory-card.flipped .card-inner,
+.memory-card.matched .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  text-align: center;
+}
+
+/* back of card = outward-facing side, shows Mar Afram image */
+.card-back {
+  background: var(--teal) center / cover no-repeat;
+  border: 2px solid var(--gold);
+}
+.card-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* front of card = revealed side, question or answer text */
+.card-front {
+  transform: rotateY(180deg);
+  background: var(--parchment-2);
+  border: 2px solid var(--gold);
+  font-family: var(--font-utility);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.card-front.is-question { background: #F1E4C6; }
+.card-front.is-answer   { background: #E7DAB6; }
+
+.memory-card.matched .card-front {
+  border-color: var(--maroon);
+  box-shadow: 0 0 0 3px rgba(107,30,35,0.15);
+}
+
+.win-banner {
+  margin-top: 22px;
+  background: var(--maroon);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 10px;
+  text-align: center;
+  font-family: var(--font-utility);
+}
+
+/* ---------------------------------------------------------
+   TAB 3 — empty state
+--------------------------------------------------------- */
+.empty-state {
+  text-align: center;
+  padding: 60px 10px;
+}
+.empty-ornament {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 16px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  position: relative;
+}
+.empty-ornament::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+.empty-state h2 {
+  font-family: var(--font-display);
+  color: var(--maroon);
+  margin: 0 0 8px;
+}
+.empty-state p { color: rgba(43,33,24,0.65); margin: 0; }
+
+/* ---------------------------------------------------------
+   Accessibility & responsiveness
+--------------------------------------------------------- */
+button:focus-visible,
+.letter-card:focus-visible,
+.memory-card:focus-visible {
+  outline: 3px solid var(--maroon);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .memory-card .card-inner { transition: none; }
+  .sound-indicator span { animation: none; }
+}
+
+@media (max-width: 480px) {
+  .app-header { flex-direction: column; gap: 10px; }
+  .header-ornament { display: none; }
+  .tabs { gap: 4px; }
+  .tab-btn { padding: 10px 12px; font-size: 14px; }
+}
