@@ -38,7 +38,7 @@
     </button>
     <button class="tab-btn" data-tab="tab3" role="tab" aria-selected="false">
       <span class="tab-index">ⲅ</span>
-      <span class="tab-label">قريبًا</span>
+      <span class="tab-label">لعبة البازل</span>
     </button>
   </nav>
 
@@ -96,14 +96,39 @@
     </section>
 
     <!-- =========================================================
-         TAB 3 : قريبًا
+         TAB 3 : لعبة البازل (Puzzle Game)
     ========================================================== -->
     <section id="tab3" class="tab-panel" role="tabpanel" hidden>
-      <div class="empty-state">
-        <div class="empty-ornament"></div>
-        <h2>قريبًا</h2>
-        <p>هذا القسم لسه هيتحدد لاحقًا.</p>
+
+      <div class="panel-intro">
+        <h2>لعبة البازل &mdash; كلمات أبانا الذي في السماوات</h2>
+        <p>رتّب 36 قطعة كلمة قبطية من كلمات الصلاة الربانية القبطية المتشابكة حتى تكتمل الصلاة بالكامل.</p>
       </div>
+
+      <div class="game-toolbar puzzle-toolbar">
+        <div class="game-stat">
+          <span class="stat-label">المحاولات</span>
+          <span class="stat-value" id="puzzleMoves">0</span>
+        </div>
+
+        <div class="game-stat">
+          <span class="stat-label">الكلمات الصحيحة</span>
+          <span class="stat-value" id="puzzleMatches">0 / 36</span>
+        </div>
+
+        <div class="puzzle-actions">
+          <button class="btn-restart" id="restartPuzzle">إعادة اللعب</button>
+        </div>
+      </div>
+
+      <!-- شبكة قطع البازل -->
+      <div id="puzzleBoard" class="puzzle-board"></div>
+
+      <!-- نصر وحصول الفوز -->
+      <div class="win-banner" id="puzzleWinBanner" hidden>
+        <p>🎉 ممتاز جداً! أتممت البازل بنجاح في <span id="puzzleWinMoves">0</span> حركة.</p>
+      </div>
+
     </section>
 
   </main>
@@ -111,7 +136,9 @@
 
 <script src="js/data-letters.js"></script>
 <script src="js/data-memory.js"></script>
+<script src="js/data-puzzle.js"></script>
 <script src="js/app.js"></script>
 <script src="js/memory-game.js"></script>
+<script src="js/puzzle-game.js"></script>
 </body>
 </html>

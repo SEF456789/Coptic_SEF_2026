@@ -416,41 +416,139 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* ---------------------------------------------------------
-   TAB 3 — empty state
+   TAB 3 — Puzzle Game (لعبة البازل)
 --------------------------------------------------------- */
-.empty-state {
-  text-align: center;
-  padding: 60px 10px;
+.puzzle-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
-.empty-ornament {
-  width: 54px;
-  height: 54px;
-  margin: 0 auto 16px;
-  border: 2px solid var(--gold);
-  border-radius: 50%;
+
+.puzzle-select {
+  background: var(--parchment-2);
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+.puzzle-select:focus {
+  border-color: var(--maroon);
+}
+
+.puzzle-actions {
+  display: flex;
+  gap: 10px;
+  margin-inline-start: auto;
+}
+
+.btn-action {
+  background: var(--teal);
+  color: var(--parchment);
+  border: 1px solid var(--gold);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background .2s ease, transform .1s ease;
+}
+.btn-action:hover {
+  background: #2b4f4e;
+  transform: translateY(-1px);
+}
+
+.puzzle-board {
   position: relative;
+  display: grid;
+  direction: ltr;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto 24px;
+  padding: 8px;
+  background-color: var(--parchment-2);
+  border: 4px solid var(--gold);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(43, 33, 24, 0.25);
+  touch-action: none;
+  overflow: visible;
 }
-.empty-ornament::before {
-  content: "";
+
+.puzzle-tile-slot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  user-select: none;
+  overflow: visible;
+}
+
+.jigsaw-piece-canvas {
   position: absolute;
-  inset: 10px;
-  border: 2px solid var(--gold);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: transform .18s ease, filter .18s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
+.puzzle-tile-slot:hover .jigsaw-piece-canvas {
+  transform: translate(-50%, -52%) scale(1.04);
+  z-index: 15;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+}
+
+.puzzle-tile-slot.selected .jigsaw-piece-canvas {
+  transform: translate(-50%, -54%) scale(1.08);
+  z-index: 30;
+  filter: drop-shadow(0 0 8px var(--gold)) drop-shadow(0 8px 16px rgba(107, 30, 35, 0.6));
+}
+
+.puzzle-tile-slot.in-place::after {
+  content: "✓";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  background: rgba(31, 59, 58, 0.9);
+  color: var(--gold-light);
+  font-size: 10px;
+  font-weight: bold;
   border-radius: 50%;
-  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gold);
+  z-index: 20;
+  pointer-events: none;
 }
-.empty-state h2 {
-  font-family: var(--font-display);
-  color: var(--maroon);
-  margin: 0 0 8px;
+
+.puzzle-tile-slot.dragging {
+  opacity: 0.4;
 }
-.empty-state p { color: rgba(43,33,24,0.65); margin: 0; }
+
+.puzzle-tile-slot.drag-over .jigsaw-piece-canvas {
+  filter: drop-shadow(0 0 10px var(--maroon));
+}
+
+
+
+
 
 /* ---------------------------------------------------------
    Accessibility & responsiveness
 --------------------------------------------------------- */
 button:focus-visible,
 .letter-card:focus-visible,
-.memory-card:focus-visible {
+.memory-card:focus-visible,
+.puzzle-tile:focus-visible {
   outline: 3px solid var(--maroon);
   outline-offset: 2px;
 }
@@ -458,6 +556,7 @@ button:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   .memory-card .card-inner { transition: none; }
   .sound-indicator span { animation: none; }
+  .puzzle-tile { transition: none; }
 }
 
 @media (max-width: 480px) {
@@ -465,4 +564,7 @@ button:focus-visible,
   .header-ornament { display: none; }
   .tabs { gap: 4px; }
   .tab-btn { padding: 10px 12px; font-size: 14px; }
+  .puzzle-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .puzzle-actions { margin-inline-start: 0; justify-content: space-between; }
 }
+
