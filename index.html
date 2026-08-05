@@ -107,6 +107,11 @@
 
       <div class="game-toolbar puzzle-toolbar">
         <div class="game-stat">
+          <span class="stat-label">الوقت المتبقي</span>
+          <span class="stat-value timer-val" id="puzzleTimer">01:30</span>
+        </div>
+
+        <div class="game-stat">
           <span class="stat-label">المحاولات</span>
           <span class="stat-value" id="puzzleMoves">0</span>
         </div>
@@ -127,6 +132,11 @@
       <!-- نصر وحصول الفوز -->
       <div class="win-banner" id="puzzleWinBanner" hidden>
         <p>🎉 ممتاز جداً! أتممت البازل بنجاح في <span id="puzzleWinMoves">0</span> حركة.</p>
+      </div>
+
+      <!-- انتهى الوقت -->
+      <div class="win-banner lose-banner" id="puzzleTimeUpBanner" hidden>
+        <p>⏰ انتهى الوقت (90 ثانية)! يمكنك الضغط على "إعادة اللعب" والمحاولة مجدداً.</p>
       </div>
 
     </section>

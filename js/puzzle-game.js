@@ -1,9 +1,9 @@
 /* =========================================================
    puzzle-game.js
-   لعبة كلمات أبانا الذي — محاذاة اللوحة واتجاه العرض 100% LTR
-   - إصلاح الانقلاب الأفقي بين اليمين واليسار الناجم عن dir="rtl"
-   - الشفافية المطلوبة 0.8
-   - نصوص قبطية ذهبية فائقة الوضوح والتباين
+   لعبة كلمات أبانا الذي — مؤقت تنازلي 90 ثانية (90s Countdown Timer)
+   - مؤقت تنازلي 90 ثانية
+   - محاذاة اللوحة من اليسار لليمن LTR
+   - حفظ تعديلات المستخدم: الشفافية 0.5 وحجم الخط 0.22
    ========================================================= */
 
 let puzzleState = {
@@ -12,7 +12,9 @@ let puzzleState = {
   selectedPieceIndex: null,
   moves: 0,
   isWon: false,
-  loadedImg: null
+  loadedImg: null,
+  timeLeft: 90,
+  timerInterval: null
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -106,10 +108,58 @@ function startPuzzleGame() {
   puzzleState.isWon = false;
 
   const winBanner = document.getElementById("puzzleWinBanner");
+  const timeUpBanner = document.getElementById("puzzleTimeUpBanner");
   if (winBanner) winBanner.hidden = true;
+  if (timeUpBanner) timeUpBanner.hidden = true;
 
   renderPuzzleBoard();
   updatePuzzleStats();
+  startPuzzleTimer();
+}
+
+function startPuzzleTimer() {
+  stopPuzzleTimer();
+
+  puzzleState.timeLeft = 90; // 90 ثانية
+  updateTimerUI();
+
+  puzzleState.timerInterval = setInterval(() => {
+    puzzleState.timeLeft--;
+    updateTimerUI();
+
+    if (puzzleState.timeLeft <= 0) {
+      stopPuzzleTimer();
+      puzzleState.isWon = true; // قفل إمكانية اللعب
+      const timeUpBanner = document.getElementById("puzzleTimeUpBanner");
+      if (timeUpBanner) timeUpBanner.hidden = false;
+    }
+  }, 1000);
+}
+
+function stopPuzzleTimer() {
+  if (puzzleState.timerInterval) {
+    clearInterval(puzzleState.timerInterval);
+    puzzleState.timerInterval = null;
+  }
+}
+
+function updateTimerUI() {
+  const timerEl = document.getElementById("puzzleTimer");
+  if (!timerEl) return;
+
+  const sec = Math.max(0, puzzleState.timeLeft);
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  const mStr = String(m).padStart(2, "0");
+  const sStr = String(s).padStart(2, "0");
+
+  timerEl.textContent = `${mStr}:${sStr}`;
+
+  if (sec <= 15) {
+    timerEl.classList.add("warning");
+  } else {
+    timerEl.classList.remove("warning");
+  }
 }
 
 function shufflePieces(arr) {
@@ -138,7 +188,6 @@ function drawJigsawPieceCanvas(img, correctIndex, totalTiles, wordData, edges, c
   const cssW = cellW + pad * 2;
   const cssH = cellH + pad * 2;
 
-  // مضاعفة الدقة لتقنيات شاشات HD / Retina
   const dpr = Math.max(window.devicePixelRatio || 1, 2);
   canvas.width = Math.ceil(cssW * dpr);
   canvas.height = Math.ceil(cssH * dpr);
@@ -161,7 +210,7 @@ function drawJigsawPieceCanvas(img, correctIndex, totalTiles, wordData, edges, c
   ctx.fillStyle = "#E4D5AE";
   ctx.fillRect(-pad, -pad, cssW, cssH);
 
-  // 1. رسم مقطع الصورة بشفافية 0.8 ومحاذاة تامة بدون أي إزاحة أو انقلاب
+  // 1. رسم مقطع الصورة بشفافية 0.5 (حسب تعديل المستخدم) ومحاذاة تامة
   if (img && img.complete && img.naturalWidth > 0) {
     const srcW = img.naturalWidth / cols;
     const srcH = img.naturalHeight / rows;
@@ -175,7 +224,7 @@ function drawJigsawPieceCanvas(img, correctIndex, totalTiles, wordData, edges, c
     const srcPadY = pad * scaleY;
 
     ctx.save();
-    ctx.globalAlpha = 0.5; // شفافية الصورة 0.8
+    ctx.globalAlpha = 0.5; // حفظ شفافية 0.5 المعدلة بواسطة المستخدم
     ctx.drawImage(
       img,
       srcX - srcPadX,
@@ -194,10 +243,10 @@ function drawJigsawPieceCanvas(img, correctIndex, totalTiles, wordData, edges, c
     ctx.fillRect(-pad, -pad, cssW, cssH);
   }
 
-  // 2. كتابة النص القبطي بنقاء ووضوح شديد بالخط الذهبي
+  // 2. كتابة النص القبطي بالخط الذهبي وتعديلات حجم الخط الخاضعة للمستخدم
   if (wordData && wordData.coptic) {
     const text = wordData.coptic;
-    const fontSize = Math.min(cellW * 0.12, cellH * 0.22);
+    const fontSize = Math.min(cellW * 0.12, cellH * 0.22); // حفظ تعديل المستخدم
 
     ctx.font = `bold ${Math.max(12, Math.floor(fontSize))}px "coptic-abraam", "Amiri", serif`;
     ctx.textAlign = "center";
@@ -303,7 +352,6 @@ function renderPuzzleBoard() {
   const cols = 4;
   const rows = Math.ceil(totalTiles / cols);
 
-  // تعيين الاتجاه صراحةً ليكون من اليسار إلى اليمين (LTR) ليتطابق مع إحداثيات الصورة
   board.setAttribute("dir", "ltr");
   board.style.direction = "ltr";
   board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
@@ -436,6 +484,8 @@ function checkPuzzleWin() {
 
   if (isAllCorrect && total > 0) {
     puzzleState.isWon = true;
+    stopPuzzleTimer();
+
     const winBanner = document.getElementById("puzzleWinBanner");
     const winMoves = document.getElementById("puzzleWinMoves");
     if (winMoves) winMoves.textContent = puzzleState.moves;

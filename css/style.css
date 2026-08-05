@@ -463,6 +463,28 @@ button { font-family: inherit; cursor: pointer; }
   transform: translateY(-1px);
 }
 
+.timer-val {
+  font-family: var(--font-utility);
+  font-weight: 700;
+  color: var(--teal);
+
+}
+
+.timer-val.warning {
+  color: var(--maroon);
+  animation: pulseTimer 0.8s ease infinite alternate;
+}
+
+@keyframes pulseTimer {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0.6; transform: scale(1.1); }
+}
+
+.lose-banner {
+  background: var(--maroon-deep);
+  border: 1px solid var(--gold);
+}
+
 .puzzle-board {
   position: relative;
   display: grid;
