@@ -41,7 +41,7 @@ function initTabs() {
 /* ---------------------------------------------------------
    Font switcher (تحديد أي خط قبطي يُستخدم لعرض الحروف)
 --------------------------------------------------------- */
-let currentCopticFont = "coptic-abraam";
+let currentCopticFont = "coptic-shenouda";
 
 function initFontSwitcher() {
   const options = document.querySelectorAll(".font-opt");
