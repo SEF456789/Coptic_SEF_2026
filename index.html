@@ -126,8 +126,29 @@
         </div>
       </div>
 
-      <!-- شبكة قطع البازل -->
-      <div id="puzzleBoard" class="puzzle-board"></div>
+      <!-- غلاف اللوحة ومحيط التفاعل -->
+      <div class="puzzle-board-wrapper">
+        <!-- شبكة قطع البازل -->
+        <div id="puzzleBoard" class="puzzle-board"></div>
+
+        <!-- شاشة بدء اللعبة التفاعلية -->
+        <div id="puzzleStartOverlay" class="puzzle-start-overlay">
+          <div class="start-card">
+            <div class="start-badge">ⲧⲉⲛⲯⲩⲭⲏ</div>
+            <div class="start-icon">🧩</div>
+            <h3 class="start-title">تحدي كلمات الصلاة الربانية</h3>
+            <p class="start-desc">رتّب 36 قطعة من كلمات الصلاة الربانية القبطية «أبانا الذي في السماوات» بشكل صحيح قبل انتهاء المؤقت!</p>
+            <div class="start-features">
+              <span class="feature-badge">⏱️ 90 ثانية</span>
+              <span class="feature-badge">🧩 36 قطعة</span>
+            </div>
+            <button id="startPuzzleBtn" class="btn-start-game">
+              <span class="btn-icon">▶</span>
+              <span class="btn-text">ابدأ اللعب الآن</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- نصر وحصول الفوز -->
       <div class="win-banner" id="puzzleWinBanner" hidden>

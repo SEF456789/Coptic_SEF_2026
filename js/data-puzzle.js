@@ -20,7 +20,7 @@ const PUZZLE_CONFIG = {
     { id: 4,  coptic: "ⲉⲧϧⲉⲛ ⲛⲓⲫⲏⲟⲩⲓ̀" },
     { id: 5,  coptic: "ⲙⲁⲣⲉϥⲧⲟⲩⲃⲟ" },
     { id: 6,  coptic: "ⲛ̀ϫⲉ ⲡⲉⲕⲣⲁⲛ ," },
-    { id: 7,  coptic: "ⲙⲁⲣⲉ⥥ⲓ̀ ⲛ̀ϫⲉ" },
+    { id: 7,  coptic: "ⲙⲁⲣⲉⲥⲓ̀ ⲛ̀ϫⲉ" },
     { id: 8,  coptic: "ⲧⲉⲕⲙⲉⲧⲟⲩⲣⲟ" },
     { id: 9,  coptic: "ⲡⲉⲧⲉϩⲛⲁⲕ" },
     { id: 10, coptic: "ⲙⲁⲣⲉϥϣⲱⲡⲓ" },

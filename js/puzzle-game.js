@@ -1,7 +1,9 @@
 /* =========================================================
    puzzle-game.js
-   لعبة كلمات أبانا الذي — مؤقت تنازلي 90 ثانية (90s Countdown Timer)
-   - مؤقت تنازلي 90 ثانية
+   لعبة كلمات أبانا الذي — مؤقت تنازلي 90 ثانية مع زر بدء ودعم اللمس للموبايل
+   - زر بدء اللعبة التفاعلي (Interactive Start Button)
+   - مؤقت تنازلي 90 ثانية يبدأ عند ضغط "ابدأ اللعب"
+   - دعم كامل وسلس للسحب والإفلات على الموبايل واللمس (Touch & Drag)
    - محاذاة اللوحة من اليسار لليمن LTR
    - حفظ تعديلات المستخدم: الشفافية 0.5 وحجم الخط 0.22
    ========================================================= */
@@ -12,9 +14,20 @@ let puzzleState = {
   selectedPieceIndex: null,
   moves: 0,
   isWon: false,
+  isStarted: false,
   loadedImg: null,
   timeLeft: 90,
   timerInterval: null
+};
+
+// حالة سحب القطع باللمس للشاشات الذكية والموبايل
+let touchDragState = {
+  activeTileIndex: null,
+  ghostEl: null,
+  startX: 0,
+  startY: 0,
+  isDragging: false,
+  currentTargetIndex: null
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -30,18 +43,29 @@ function preloadPuzzleImage() {
   img.src = PUZZLE_CONFIG.imagePath;
   img.onload = () => {
     puzzleState.loadedImg = img;
-    startPuzzleGame();
+    prepareInitialPuzzleBoard();
   };
   img.onerror = () => {
-    startPuzzleGame();
+    prepareInitialPuzzleBoard();
   };
 }
 
 function initPuzzleControls() {
+  const startBtn = document.getElementById("startPuzzleBtn");
   const restartBtn = document.getElementById("restartPuzzle");
 
+  if (startBtn) {
+    startBtn.addEventListener("click", () => {
+      hideStartOverlay();
+      startPuzzleGame();
+    });
+  }
+
   if (restartBtn) {
-    restartBtn.addEventListener("click", startPuzzleGame);
+    restartBtn.addEventListener("click", () => {
+      hideStartOverlay();
+      startPuzzleGame();
+    });
   }
 
   window.addEventListener("resize", debounce(() => {
@@ -49,6 +73,20 @@ function initPuzzleControls() {
       renderPuzzleBoard();
     }
   }, 200));
+}
+
+function hideStartOverlay() {
+  const overlay = document.getElementById("puzzleStartOverlay");
+  if (overlay) {
+    overlay.classList.add("hidden");
+  }
+}
+
+function showStartOverlay() {
+  const overlay = document.getElementById("puzzleStartOverlay");
+  if (overlay) {
+    overlay.classList.remove("hidden");
+  }
 }
 
 function debounce(fn, ms) {
@@ -80,9 +118,44 @@ function getPieceEdges(index, count, edgeMaps) {
   return { top, right, bottom, left };
 }
 
+function prepareInitialPuzzleBoard() {
+  if (typeof PUZZLE_CONFIG === "undefined" || !PUZZLE_CONFIG.wordUnits) return;
+
+  const totalTiles = PUZZLE_CONFIG.wordUnits.length;
+  puzzleState.edges = generateEdgeMaps(totalTiles);
+
+  const pieces = [];
+  for (let i = 0; i < totalTiles; i++) {
+    const edges = getPieceEdges(i, totalTiles, puzzleState.edges);
+    pieces.push({
+      correctIndex: i,
+      currentIndex: i,
+      wordData: PUZZLE_CONFIG.wordUnits[i],
+      edges
+    });
+  }
+
+  puzzleState.pieces = shufflePieces(pieces);
+  puzzleState.pieces.forEach((p, idx) => {
+    p.currentIndex = idx;
+  });
+
+  puzzleState.selectedPieceIndex = null;
+  puzzleState.moves = 0;
+  puzzleState.isWon = false;
+  puzzleState.isStarted = false;
+  puzzleState.timeLeft = 90;
+
+  updateTimerUI();
+  renderPuzzleBoard();
+  updatePuzzleStats();
+  showStartOverlay();
+}
+
 function startPuzzleGame() {
   if (typeof PUZZLE_CONFIG === "undefined" || !PUZZLE_CONFIG.wordUnits) return;
 
+  puzzleState.isStarted = true;
   const totalTiles = PUZZLE_CONFIG.wordUnits.length; // 36 قطعة كلمة
   puzzleState.edges = generateEdgeMaps(totalTiles);
 
@@ -124,6 +197,7 @@ function startPuzzleTimer() {
   updateTimerUI();
 
   puzzleState.timerInterval = setInterval(() => {
+    if (!puzzleState.isStarted) return;
     puzzleState.timeLeft--;
     updateTimerUI();
 
@@ -155,7 +229,7 @@ function updateTimerUI() {
 
   timerEl.textContent = `${mStr}:${sStr}`;
 
-  if (sec <= 15) {
+  if (sec <= 15 && puzzleState.isStarted) {
     timerEl.classList.add("warning");
   } else {
     timerEl.classList.remove("warning");
@@ -389,9 +463,12 @@ function renderPuzzleBoard() {
       tileSlot.classList.add("in-place");
     }
 
+    // 1. النقر للاختيار والاستبدال (Click / Tap Selection)
     tileSlot.addEventListener("click", () => handleTileClick(index));
 
+    // 2. أحداث السحب والإفلات للكمبيوتر (Desktop HTML5 Drag & Drop)
     tileSlot.addEventListener("dragstart", (e) => {
+      if (!puzzleState.isStarted || puzzleState.isWon) return;
       tileSlot.classList.add("dragging");
       e.dataTransfer.setData("text/plain", index);
     });
@@ -401,6 +478,7 @@ function renderPuzzleBoard() {
     });
 
     tileSlot.addEventListener("dragover", (e) => {
+      if (!puzzleState.isStarted || puzzleState.isWon) return;
       e.preventDefault();
       tileSlot.classList.add("drag-over");
     });
@@ -410,6 +488,7 @@ function renderPuzzleBoard() {
     });
 
     tileSlot.addEventListener("drop", (e) => {
+      if (!puzzleState.isStarted || puzzleState.isWon) return;
       e.preventDefault();
       tileSlot.classList.remove("drag-over");
       const fromIndex = parseInt(e.dataTransfer.getData("text/plain"), 10);
@@ -418,12 +497,96 @@ function renderPuzzleBoard() {
       }
     });
 
+    // 3. أحداث السحب والإفلات المتوافقة مع الموبايل واللمس (Mobile Touch Drag & Drop)
+    setupMobileTouchEvents(tileSlot, index);
+
     board.appendChild(tileSlot);
   });
 }
 
+function setupMobileTouchEvents(tileSlot, index) {
+  tileSlot.addEventListener("touchstart", (e) => {
+    if (!puzzleState.isStarted || puzzleState.isWon) return;
+    const touch = e.touches[0];
+    touchDragState.activeTileIndex = index;
+    touchDragState.startX = touch.clientX;
+    touchDragState.startY = touch.clientY;
+    touchDragState.isDragging = false;
+    touchDragState.currentTargetIndex = null;
+  }, { passive: false });
+
+  tileSlot.addEventListener("touchmove", (e) => {
+    if (!puzzleState.isStarted || puzzleState.isWon || touchDragState.activeTileIndex !== index) return;
+    const touch = e.touches[0];
+    const dx = Math.abs(touch.clientX - touchDragState.startX);
+    const dy = Math.abs(touch.clientY - touchDragState.startY);
+
+    // تفعيل السحب عند تجاوز التحرّك 8 بكسل
+    if (!touchDragState.isDragging && (dx > 8 || dy > 8)) {
+      touchDragState.isDragging = true;
+      tileSlot.classList.add("touch-dragging");
+
+      const originalCanvas = tileSlot.querySelector("canvas");
+      if (originalCanvas) {
+        const ghost = originalCanvas.cloneNode(true);
+        ghost.className = "touch-drag-ghost";
+        const rect = originalCanvas.getBoundingClientRect();
+        ghost.style.width = `${rect.width}px`;
+        ghost.style.height = `${rect.height}px`;
+        ghost.style.left = `${touch.clientX}px`;
+        ghost.style.top = `${touch.clientY}px`;
+        document.body.appendChild(ghost);
+        touchDragState.ghostEl = ghost;
+      }
+    }
+
+    if (touchDragState.isDragging) {
+      e.preventDefault(); // منع التمرير على الموبايل أثناء سحب قطعة البازل
+
+      if (touchDragState.ghostEl) {
+        touchDragState.ghostEl.style.left = `${touch.clientX}px`;
+        touchDragState.ghostEl.style.top = `${touch.clientY}px`;
+      }
+
+      // إزالة التحديد السابق عن القطع المستهدفة
+      document.querySelectorAll(".puzzle-tile-slot.drag-over").forEach(el => el.classList.remove("drag-over"));
+
+      const elementUnder = document.elementFromPoint(touch.clientX, touch.clientY);
+      const targetSlot = elementUnder ? elementUnder.closest(".puzzle-tile-slot") : null;
+
+      if (targetSlot && targetSlot.dataset.index !== undefined) {
+        const targetIdx = parseInt(targetSlot.dataset.index, 10);
+        touchDragState.currentTargetIndex = targetIdx;
+        targetSlot.classList.add("drag-over");
+      } else {
+        touchDragState.currentTargetIndex = null;
+      }
+    }
+  }, { passive: false });
+
+  tileSlot.addEventListener("touchend", () => {
+    if (!puzzleState.isStarted || puzzleState.isWon || touchDragState.activeTileIndex !== index) return;
+
+    document.querySelectorAll(".puzzle-tile-slot.drag-over").forEach(el => el.classList.remove("drag-over"));
+    tileSlot.classList.remove("touch-dragging");
+
+    if (touchDragState.ghostEl) {
+      touchDragState.ghostEl.remove();
+      touchDragState.ghostEl = null;
+    }
+
+    if (touchDragState.isDragging && touchDragState.currentTargetIndex !== null && touchDragState.currentTargetIndex !== index) {
+      swapTiles(index, touchDragState.currentTargetIndex);
+    }
+
+    touchDragState.activeTileIndex = null;
+    touchDragState.isDragging = false;
+    touchDragState.currentTargetIndex = null;
+  });
+}
+
 function handleTileClick(index) {
-  if (puzzleState.isWon) return;
+  if (!puzzleState.isStarted || puzzleState.isWon) return;
 
   if (puzzleState.selectedPieceIndex === null) {
     puzzleState.selectedPieceIndex = index;
@@ -449,10 +612,12 @@ function highlightTile(index, select) {
 }
 
 function swapTiles(indexA, indexB) {
-  [puzzleState.pieces[indexA], puzzleState.pieces[indexB]] = [
-    puzzleState.pieces[indexB],
-    puzzleState.pieces[indexA]
-  ];
+  if (!puzzleState.isStarted || puzzleState.isWon) return;
+
+  const pieceA = puzzleState.pieces[indexA];
+  const pieceB = puzzleState.pieces[indexB];
+
+  [puzzleState.pieces[indexA], puzzleState.pieces[indexB]] = [pieceB, pieceA];
 
   puzzleState.pieces[indexA].currentIndex = indexA;
   puzzleState.pieces[indexB].currentIndex = indexB;
@@ -461,7 +626,41 @@ function swapTiles(indexA, indexB) {
 
   renderPuzzleBoard();
   updatePuzzleStats();
+
+  const board = document.getElementById("puzzleBoard");
+  if (board) {
+    if (puzzleState.pieces[indexA].correctIndex === indexA) {
+      createSparkleBurst(board.children[indexA]);
+    }
+    if (puzzleState.pieces[indexB].correctIndex === indexB) {
+      createSparkleBurst(board.children[indexB]);
+    }
+  }
+
   checkPuzzleWin();
+}
+
+function createSparkleBurst(container) {
+  if (!container) return;
+  for (let i = 0; i < 8; i++) {
+    const particle = document.createElement("div");
+    particle.className = "sparkle-particle";
+    const angle = (i / 8) * Math.PI * 2;
+    const dist = 18 + Math.random() * 24;
+    const dx = Math.cos(angle) * dist + "px";
+    const dy = Math.sin(angle) * dist + "px";
+    particle.style.setProperty("--dx", dx);
+    particle.style.setProperty("--dy", dy);
+    particle.style.left = "50%";
+    particle.style.top = "50%";
+    container.appendChild(particle);
+
+    setTimeout(() => {
+      if (particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+    }, 600);
+  }
 }
 
 function updatePuzzleStats() {

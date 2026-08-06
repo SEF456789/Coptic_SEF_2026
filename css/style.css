@@ -552,13 +552,198 @@ button { font-family: inherit; cursor: pointer; }
   pointer-events: none;
 }
 
-.puzzle-tile-slot.dragging {
-  opacity: 0.4;
+.puzzle-board-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto 24px;
 }
 
-.puzzle-tile-slot.drag-over .jigsaw-piece-canvas {
-  filter: drop-shadow(0 0 10px var(--maroon));
+/* ---------------------------------------------------------
+   Interactive Start Overlay & Button
+--------------------------------------------------------- */
+.puzzle-start-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(28, 20, 14, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 20px;
+  opacity: 1;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
+
+.puzzle-start-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.start-card {
+  background: var(--parchment);
+  border: 3px solid var(--gold);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  max-width: 440px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 245, 220, 0.5);
+  animation: startCardPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+@keyframes startCardPop {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.start-badge {
+  font-family: "coptic-abraam", var(--font-display);
+  color: var(--gold);
+  font-size: 16px;
+  letter-spacing: 0.15em;
+}
+
+.start-icon {
+  font-size: 48px;
+  line-height: 1;
+  animation: pulseIcon 2s infinite ease-in-out;
+}
+
+@keyframes pulseIcon {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(5deg); }
+}
+
+.start-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--maroon);
+  font-weight: 700;
+}
+
+.start-desc {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(43, 33, 24, 0.85);
+  line-height: 1.5;
+}
+
+.start-features {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 4px 0 8px;
+}
+
+.feature-badge {
+  background: var(--parchment-2);
+  border: 1px solid var(--gold);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  font-family: var(--font-utility);
+}
+
+/* التنسيق المميز والبارز لزر البدء */
+.btn-start-game {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--maroon) 0%, var(--maroon-deep) 100%);
+  color: #FFF4B8;
+  border: 2px solid var(--gold);
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(107, 30, 35, 0.5), 0 0 15px rgba(184, 137, 43, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  animation: startGlow 2s infinite ease-in-out;
+}
+
+@keyframes startGlow {
+  0%, 100% { box-shadow: 0 6px 20px rgba(107, 30, 35, 0.5), 0 0 15px rgba(184, 137, 43, 0.3); }
+  50%      { box-shadow: 0 8px 26px rgba(107, 30, 35, 0.7), 0 0 25px rgba(217, 180, 92, 0.6); }
+}
+
+.btn-start-game:hover {
+  transform: translateY(-3px) scale(1.03);
+  background: linear-gradient(135deg, #7c242a 0%, var(--maroon) 100%);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.btn-start-game:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn-start-game .btn-icon {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.btn-start-game:hover .btn-icon {
+  transform: translateX(-4px);
+}
+
+/* Touch Dragging Support for Mobile View */
+.puzzle-tile-slot {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.puzzle-tile-slot.touch-dragging {
+  opacity: 0.5;
+  z-index: 40;
+}
+
+.touch-drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate(-50%, -50%) scale(1.1);
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 10px var(--gold));
+  transition: none;
+}
+
+/* Sparkle & particle animation effects */
+.sparkle-particle {
+  position: absolute;
+  pointer-events: none;
+  width: 8px;
+  height: 8px;
+  background: var(--gold-light);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--gold);
+  z-index: 40;
+  animation: sparkleFade 0.6s ease-out forwards;
+}
+
+@keyframes sparkleFade {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+/* ---------------------------------------------------------
+   Accessibility & responsiveness
+--------------------------------------------------------- */
 
 
 
