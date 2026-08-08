@@ -16,7 +16,7 @@ let puzzleState = {
   isWon: false,
   isStarted: false,
   loadedImg: null,
-  timeLeft: 90,
+  timeLeft: 9000,
   timerInterval: null
 };
 
@@ -144,7 +144,7 @@ function prepareInitialPuzzleBoard() {
   puzzleState.moves = 0;
   puzzleState.isWon = false;
   puzzleState.isStarted = false;
-  puzzleState.timeLeft = 90;
+  puzzleState.timeLeft = 9000;
 
   updateTimerUI();
   renderPuzzleBoard();
@@ -193,7 +193,7 @@ function startPuzzleGame() {
 function startPuzzleTimer() {
   stopPuzzleTimer();
 
-  puzzleState.timeLeft = 90; // 90 ثانية
+  puzzleState.timeLeft = 9000; // 90 ثانية
   updateTimerUI();
 
   puzzleState.timerInterval = setInterval(() => {
