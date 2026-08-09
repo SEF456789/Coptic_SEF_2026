@@ -96,9 +96,19 @@ function renderLettersGrid() {
 }
 
 function playLetterAudio(letter, card) {
+  // إذا كان نفس الكارت يعمل حالياً، يتم إيقافه
+  if (activeCard === card) {
+    stopAllLetterAudio();
+    return;
+  }
+
   stopAllLetterAudio();
 
-  if (!letter.audioPath) {
+  const paths = Array.isArray(letter.audioPath)
+    ? letter.audioPath.filter(Boolean)
+    : letter.audioPath ? [letter.audioPath] : [];
+
+  if (paths.length === 0) {
     // مفيش مسار صوت متحط لسه — نعرض حالة "تشغيل" بصريًا لمدة قصيرة فقط كمعاينة
     card.classList.add("playing");
     activeCard = card;
@@ -111,21 +121,46 @@ function playLetterAudio(letter, card) {
     return;
   }
 
-  const audio = new Audio(letter.audioPath);
-  activeAudio = audio;
+  // تعيين الكارت الحالي ككارت نشط وتفعيل مظهر التشغيل
   activeCard = card;
   card.classList.add("playing");
 
-  audio.addEventListener("ended", () => {
-    card.classList.remove("playing");
-    if (activeAudio === audio) activeAudio = null;
-    if (activeCard === card) activeCard = null;
-  });
+  let currentTrackIndex = 0;
 
-  audio.play().catch(() => {
-    // تعذر تشغيل الصوت (مسار خاطئ أو المتصفح منع التشغيل التلقائي)
-    card.classList.remove("playing");
-  });
+  function playNextTrack() {
+    if (activeCard !== card) return;
+
+    if (currentTrackIndex >= paths.length) {
+      card.classList.remove("playing");
+      activeAudio = null;
+      activeCard = null;
+      return;
+    }
+
+    const audio = new Audio(paths[currentTrackIndex]);
+    activeAudio = audio;
+
+    audio.addEventListener("ended", () => {
+      if (activeCard !== card) return;
+      currentTrackIndex++;
+      playNextTrack();
+    });
+
+    audio.play().catch((err) => {
+      console.warn("Audio playback error for path:", paths[currentTrackIndex], err);
+      if (activeCard !== card) return;
+      currentTrackIndex++;
+      if (currentTrackIndex < paths.length) {
+        playNextTrack();
+      } else {
+        card.classList.remove("playing");
+        if (activeAudio === audio) activeAudio = null;
+        if (activeCard === card) activeCard = null;
+      }
+    });
+  }
+
+  playNextTrack();
 }
 
 function stopAllLetterAudio() {
