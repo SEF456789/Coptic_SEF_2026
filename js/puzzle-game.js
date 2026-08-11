@@ -193,7 +193,7 @@ function startPuzzleGame() {
 function startPuzzleTimer() {
   stopPuzzleTimer();
 
-  puzzleState.timeLeft = 9000; // 90 ثانية
+  puzzleState.timeLeft = 300; // 90 ثانية
   updateTimerUI();
 
   puzzleState.timerInterval = setInterval(() => {
@@ -320,7 +320,7 @@ function drawJigsawPieceCanvas(img, correctIndex, totalTiles, wordData, edges, c
   // 2. كتابة النص القبطي بالخط الذهبي وتعديلات حجم الخط الخاضعة للمستخدم
   if (wordData && wordData.coptic) {
     const text = wordData.coptic;
-    const fontSize = Math.min(cellW * 0.12, cellH * 0.22); // حفظ تعديل المستخدم
+    const fontSize = Math.min(cellW * 0.12, cellH * 0.18); // حفظ تعديل المستخدم
 
     ctx.font = `bold ${Math.max(12, Math.floor(fontSize))}px "coptic-abraam", "Amiri", serif`;
     ctx.textAlign = "center";
@@ -333,7 +333,7 @@ function drawJigsawPieceCanvas(img, correctIndex, totalTiles, wordData, edges, c
     ctx.shadowOffsetY = 2;
 
     // حدود دقيقة بارزة داكنة
-    ctx.lineWidth = 3.0;
+    ctx.lineWidth = 2.0;
     ctx.strokeStyle = "rgba(15, 8, 3, 0.95)";
     ctx.strokeText(text, cellW / 2, cellH / 2);
 
