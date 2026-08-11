@@ -10,6 +10,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap" rel="stylesheet">
 
+<!-- Font Awesome icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -28,16 +32,24 @@
 
   <!-- ===== شريط التبويبات ===== -->
   <nav class="tabs" role="tablist">
-    <button class="tab-btn active" data-tab="tab1" role="tab" aria-selected="true">
+    <button class="tab-btn active" data-tab="tab0" role="tab" aria-selected="true">
       <span class="tab-index">A</span>
+      <span class="tab-label">المقدمة</span>
+    </button>
+    <button class="tab-btn" data-tab="tab1" role="tab" aria-selected="false">
+      <span class="tab-index">B</span>
       <span class="tab-label">الحروف</span>
     </button>
+    <button class="tab-btn" data-tab="tab-rules" role="tab" aria-selected="false">
+      <span class="tab-index">G</span>
+      <span class="tab-label">قواعد</span>
+    </button>
     <button class="tab-btn" data-tab="tab2" role="tab" aria-selected="false">
-      <span class="tab-index">B</span>
+      <span class="tab-index">D</span>
       <span class="tab-label">لعبة الذاكرة</span>
     </button>
     <button class="tab-btn" data-tab="tab3" role="tab" aria-selected="false">
-      <span class="tab-index">G</span>
+      <span class="tab-index">E</span>
       <span class="tab-label">لعبة البازل</span>
     </button>
   </nav>
@@ -45,9 +57,28 @@
   <main class="tab-panels">
 
     <!-- =========================================================
+         TAB 0 : المقدمة (الفيديو التوضيحي)
+    ========================================================== -->
+    <section id="tab0" class="tab-panel active" role="tabpanel">
+
+      <div class="panel-intro">
+        <h2>مقدمة عن الحروف القبطية</h2>
+        <p>شاهد الفيديو التوضيحي للتعرف على الحروف القبطية وأساسيات نطقها.</p>
+      </div>
+
+      <div class="intro-video-wrapper">
+        <video controls preload="metadata" class="intro-video">
+          <source src="assets/intro/intro.mp4" type="video/mp4">
+          متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+      </div>
+
+    </section>
+
+    <!-- =========================================================
          TAB 1 : الحروف القبطية
     ========================================================== -->
-    <section id="tab1" class="tab-panel active" role="tabpanel">
+    <section id="tab1" class="tab-panel" role="tabpanel" hidden>
 
       <div class="panel-intro">
         <h2>تعلّم الحروف</h2>
@@ -64,6 +95,52 @@
       </div> -->
 
       <div id="lettersGrid" class="letters-grid"><!-- تُملأ عبر js/app.js من js/data-letters.js --></div>
+    </section>
+
+    <!-- =========================================================
+         TAB RULES : قواعد اللغة القبطية (عجلة القواعد التفاعلية)
+    ========================================================== -->
+    <section id="tab-rules" class="tab-panel" role="tabpanel" hidden>
+
+      <div class="panel-intro">
+        <h2>مسار تعلّم قواعد اللغة القبطية</h2>
+        <p>اضغط على إحدى الأيقونات في العجلة التفاعلية أدناه لمشاهدة فيديو القاعدة ودراستها.</p>
+      </div>
+
+      <!-- شريط التقدم الإجمالي -->
+      <div class="rules-progress-card">
+        <div class="progress-info">
+          <span class="progress-title">نسبة إنجاز القواعد:</span>
+          <span class="progress-status" id="rulesProgressText">0 من 5 قواعد (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="rulesProgressFill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- عجلة القواعد التفاعلية (Radial Wheel Selector) -->
+      <div class="radial-wheel-wrapper">
+        <!-- اللافتة المضيئة لعنوان القاعدة المنتخبة -->
+        <div class="wheel-title-banner" id="wheelTitleBanner">
+          <span class="banner-text" id="wheelBannerText">اختر قاعدة للبدء</span>
+        </div>
+
+        <!-- أشعة الضوء الصاعدة -->
+        <div class="wheel-light-rays"></div>
+
+        <!-- عجلة الأيقونات الدائرية -->
+        <div class="wheel-container" id="wheelContainer">
+          <!-- كرة المركز المضيئة -->
+          <div class="wheel-center-orb">
+            <i class="fa-solid fa-cross orb-icon"></i>
+          </div>
+          <!-- تُملأ أيقونات القواعد الـ 5 حول المركز عبر js/app.js -->
+        </div>
+      </div>
+
+      <!-- منطقة عرض فيديو القاعدة الحالية والتحكم بالخطوات -->
+      <div id="rulesVideoContainer" class="rules-active-container"></div>
+
     </section>
 
     <!-- =========================================================
@@ -166,6 +243,7 @@
 </div>
 
 <script src="js/data-letters.js"></script>
+<script src="js/data-rules.js"></script>
 <script src="js/data-memory.js"></script>
 <script src="js/data-puzzle.js"></script>
 <script src="js/app.js"></script>
