@@ -38,7 +38,7 @@ const PUZZLE_CONFIG = {
     { id: 25, coptic: "`e'oun epiracmoc>" },
     { id: 26, coptic: "alla na\\men" },
     { id: 27, coptic: "`ebol\\a pipet\\wou>" },
-    { id: 28, coptic: "en Pi`xrictoc" },
+    { id: 28, coptic: "'en Pi`xrictoc" },
     { id: 29, coptic: "Ihcouc Pensoic>" },
     { id: 30, coptic: "je qwk" },
     { id: 31, coptic: "te ;metouro> " },
