@@ -320,7 +320,7 @@ function drawJigsawPieceCanvas(img, correctIndex, totalTiles, wordData, edges, c
   // 2. كتابة النص القبطي بالخط الذهبي وتعديلات حجم الخط الخاضعة للمستخدم
   if (wordData && wordData.coptic) {
     const text = wordData.coptic;
-    const fontSize = Math.min(cellW * 0.12, cellH * 0.18); // حفظ تعديل المستخدم
+    const fontSize = Math.min(cellW * 0.14, cellH * 0.22); // حفظ تعديل المستخدم
 
     ctx.font = `bold ${Math.max(12, Math.floor(fontSize))}px "coptic-abraam", "Amiri", serif`;
     ctx.textAlign = "center";
