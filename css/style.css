@@ -294,6 +294,7 @@ button { font-family: inherit; cursor: pointer; }
   object-fit: contain;
 }
 .letter-shape .letter-glyph {
+  font-family: "coptic-abraam", sans-serif;
   font-size: 34px;
   line-height: 1;
   color: var(--maroon-deep);

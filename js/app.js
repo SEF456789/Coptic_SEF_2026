@@ -6,7 +6,6 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
-  initFontSwitcher();
   renderLettersGrid();
   initRulesProgress();
 });
@@ -49,7 +48,7 @@ function initTabs() {
 /* ---------------------------------------------------------
    Font switcher (تحديد أي خط قبطي يُستخدم لعرض الحروف)
 --------------------------------------------------------- */
-let currentCopticFont = "coptic-shenouda";
+let currentCopticFont = "coptic-abraam";
 
 function initFontSwitcher() {
   const options = document.querySelectorAll(".font-opt");
